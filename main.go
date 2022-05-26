@@ -42,7 +42,9 @@ func main() {
 				filtered = append(filtered, p)
 			}
 		}
-		result, err := yaml.Marshal(filtered)
+		result, err := yaml.Marshal(map[string][]interface{}{
+			"proxies": filtered,
+		})
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			_, _ = w.Write([]byte(err.Error()))
