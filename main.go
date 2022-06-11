@@ -130,7 +130,7 @@ var (
 	KyFilter   Filter
 	NexFilter  Filter
 	GaFilter   Filter
-	GaMutation Mutation
+	UdpMutation Mutation
 )
 
 func init() {
@@ -141,12 +141,12 @@ func init() {
 	)
 	NexFilter = FilterStringField("name", "Japan")
 	GaFilter = FilterStringField("name", "日本")
-	GaMutation = MutationSet("udp", true)
+	UdpMutation = MutationSet("udp", true)
 }
 
 func main() {
-	http.HandleFunc("/ky", handle(KyFilter))
-	http.HandleFunc("/nex", handle(NexFilter))
-	http.HandleFunc("/ga", handle(GaFilter, GaMutation))
+	http.HandleFunc("/ky", handle(KyFilter, UdpMutation))
+	http.HandleFunc("/nex", handle(NexFilter, UdpMutation))
+	http.HandleFunc("/ga", handle(GaFilter, UdpMutation))
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
