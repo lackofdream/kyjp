@@ -50,6 +50,17 @@ func FilterNot(f Filter) Filter {
 	}
 }
 
+func FilterAny(fs ...Filter) Filter {
+	return func(p Proxy) bool {
+		for _, f := range fs {
+			if f(p) {
+				return true
+			}
+		}
+		return false
+	}
+}
+
 func FilterAll(fs ...Filter) Filter {
 	return func(p Proxy) bool {
 		for _, f := range fs {
@@ -127,20 +138,20 @@ func ProxiesFilter(ps []Proxy, filter Filter) []Proxy {
 }
 
 var (
-	KyFilter   Filter
-	NexFilter  Filter
-	GaFilter   Filter
+	KyFilter    Filter
+	NexFilter   Filter
+	GaFilter    Filter
 	UdpMutation Mutation
 )
 
 func init() {
 	KyFilter = FilterAll(
-		FilterStringField("name", "日本"),
+		FilterAny(FilterStringField("name", "日本"), FilterStringField("name", "香港")),
 		FilterNot(FilterStringField("name", "仅海外用户")),
 		FilterNot(FilterStringField("name", "SS")),
 	)
-	NexFilter = FilterStringField("name", "Japan")
-	GaFilter = FilterStringField("name", "日本")
+	NexFilter = FilterAny(FilterStringField("name", "Japan"), FilterStringField("name", "Hong Kong"))
+	GaFilter = FilterAny(FilterStringField("name", "日本"), FilterStringField("name", "香港"))
 	UdpMutation = MutationSet("udp", true)
 }
 
